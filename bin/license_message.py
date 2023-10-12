@@ -35,8 +35,7 @@ class DecryptionTimeout(Exception):
 
 
 def generate_key():
-    key = secrets.token_bytes(32)
-    return key
+    return secrets.token_bytes(32)
 
 
 def handle_generate_key(args):
@@ -49,8 +48,7 @@ def encrypt_message(key, message):
     nonce = secrets.token_bytes(NONCE_BYTES)
     timestamp = calendar.timegm(dt.now().utctimetuple())
     data = timestamp.to_bytes(10, byteorder="big") + b"__" + message
-    ciphertext = nonce + AESGCM(key).encrypt(nonce, data, b"")
-    return ciphertext
+    return nonce + AESGCM(key).encrypt(nonce, data, b"")
 
 
 def handle_encrypt_message(args):
@@ -77,7 +75,7 @@ def handle_decrypt_message(args):
     key = base64.b64decode(args.key.encode("utf-8"))
     ciphertext = base64.b64decode(args.message.encode("utf-8"))
     message = decrypt_message(key, ciphertext, timeout=args.timeout)
-    print(str(message), file=args.outfile)
+    print(message, file=args.outfile)
 
 
 def parse_args(argv=None):
